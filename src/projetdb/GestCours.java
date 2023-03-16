@@ -228,7 +228,7 @@ public class GestCours {
             SessionCours sc=new SessionCours(sid,dateDebut,dateFin,nbinscrits,cours,form,local);
             System.out.println(i+++"."+sc);
         }
-        if(!trouve) System.out.println("aucune commande trouvée");
+        if(!trouve) System.out.println("aucune session trouvée");
     }
 
     private Formateur rechercheFormateur(int fid) {
@@ -294,7 +294,7 @@ public class GestCours {
                 String maitrise= rs.getString(3);
                 System.out.println("matière : "+nm+", formateur : "+nf+", maitrise : "+maitrise);
             }
-            if(!trouve) System.out.println("aucune commande trouvée");
+            if(!trouve) System.out.println("aucun cours trouvée");
         } catch (SQLException e) {
             System.out.println("erreur sql :"+e);
         }
