@@ -1,4 +1,4 @@
-package Projet;
+package proj.metier;
 /**
  * @author noaht
  * @version 1.0

@@ -1,4 +1,7 @@
-package Projet;
+package proj.metier;
+
+import java.time.LocalDate;
+
 /**
  * @author noaht
  * @version 1.0
@@ -13,11 +16,11 @@ public class SessionCours {
     /**
      * date de la première session de cours
      */
-    private String dateDebut;
+    private LocalDate dateDebut;
     /**
      * date de la dernière session de cours
      */
-    private String dateFin;
+    private LocalDate dateFin;
     /**
      * nombre d'élèves inscrits au cours
      */
@@ -26,6 +29,10 @@ public class SessionCours {
      * Le cours donné lors des sessions
      */
     private Cours cours;
+    /**
+     * Le formateur qui donne le cours
+     */
+    private Formateur formateur;
     /**
      * le local dans lequel le cours est donné
      */
@@ -52,7 +59,7 @@ public class SessionCours {
      * getter de la date du premier cours
      * @return la date du premier cours
      */
-    public String getDateDebut() {
+    public LocalDate getDateDebut() {
         return dateDebut;
     }
 
@@ -60,7 +67,7 @@ public class SessionCours {
      * setter de la date du premier cours
      * @param dateDebut la date du premier cours
      */
-    public void setDateDebut(String dateDebut) {
+    public void setDateDebut(LocalDate dateDebut) {
         this.dateDebut = dateDebut;
     }
 
@@ -68,7 +75,7 @@ public class SessionCours {
      * getter de la date du dernier cours
      * @return la date du dernier cours
      */
-    public String getDateFin() {
+    public LocalDate getDateFin() {
         return dateFin;
     }
 
@@ -76,7 +83,7 @@ public class SessionCours {
      * setter de la date du dernier cours
      * @param dateFin la date du dernier cours
      */
-    public void setDateFin(String dateFin) {
+    public void setDateFin(LocalDate dateFin) {
         this.dateFin = dateFin;
     }
 
@@ -130,19 +137,38 @@ public class SessionCours {
 
     /**
      *
-     * @param id identifiant de la session
-     * @param dateDebut date du premier cours
-     * @param dateFin date du dernier cours
-     * @param nbreInscrits nombre d'élèves inscrits au cours
-     * @param cours cours donné lors des sessions
-     * @param local local dans lequel les cours sont donnés
+     * @param id
+     * @param dateDebut
+     * @param dateFin
+     * @param nbreInscrits
+     * @param cours
+     * @param formateur
+     * @param local
      */
-    public SessionCours(int id, String dateDebut, String dateFin, int nbreInscrits, Cours cours, Local local) {
+    public SessionCours(int id, LocalDate dateDebut, LocalDate dateFin, int nbreInscrits, Cours cours,Formateur formateur, Local local) {
         this.id = id;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.nbreInscrits = nbreInscrits;
         this.cours = cours;
+        this.formateur=formateur;
         this.local = local;
+    }
+
+    /**
+     * methode permettant d'afficher une session de cours
+     * @return les informations de la session de cours
+     */
+    @Override
+    public String toString() {
+        return "SessionCours{" +
+                "id=" + id +
+                ", dateDebut=" + dateDebut +
+                ", dateFin=" + dateFin +
+                ", nbreInscrits=" + nbreInscrits +
+                ", cours=" + cours +
+                ", formateur=" + formateur +
+                ", local=" + local +
+                '}';
     }
 }

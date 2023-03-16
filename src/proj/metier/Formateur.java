@@ -1,4 +1,4 @@
-package Projet;
+package proj.metier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,8 @@ import java.util.Objects;
  * @see SessionCours
  */
 public class Formateur {
+
+
     /**
      * identifiant unique-numero de formateur
      */
@@ -146,5 +148,18 @@ public class Formateur {
     @Override
     public int hashCode() {
         return Objects.hash(mail);
+    }
+    /**
+     * methode permettant d'afficher un formateur
+     * @return les informations du formateur
+     */
+    @Override
+    public String toString() {
+        return "Formateur{" +
+                "id=" + id +
+                ", mail='" + mail + '\'' +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                '}';
     }
 }

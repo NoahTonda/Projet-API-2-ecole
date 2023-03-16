@@ -1,4 +1,4 @@
-package Projet;
+package proj.metier;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * @see SessionCours
  */
 public class Cours {
-    /**
+     /**
      * id du cours
      */
     private int id;
@@ -120,5 +120,17 @@ public class Cours {
         this.id = id;
         this.matiere = matiere;
         this.nbreHeures = nbreHeures;
+    }
+    /**
+     * methode permettant d'afficher un cours
+     * @return les informations du cours
+     */
+    @Override
+    public String toString() {
+        return "Cours{" +
+                "id=" + id +
+                ", matiere='" + matiere + '\'' +
+                ", nbreHeures=" + nbreHeures +
+                '}';
     }
 }

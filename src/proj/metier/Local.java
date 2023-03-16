@@ -1,4 +1,4 @@
-package Projet;
+package proj.metier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class Local {
     /**
      * Liste des sessions de cours ayant lieu dans ce local
      */
-    private List<SessionCours> session=new ArrayList<>();
+    private List<SessionCours> sessions=new ArrayList<>();
     /**
      *
      * @param id numero de local
@@ -43,7 +43,7 @@ public class Local {
      * @return la liste des sessions dans le local
      */
     public List<SessionCours> getSession() {
-        return session;
+        return sessions;
     }
 
     /**
@@ -51,7 +51,7 @@ public class Local {
      * @param session la liste des sessions dans le local
      */
     public void setSession(List<SessionCours> session) {
-        this.session = session;
+        this.sessions = session;
     }
 
 
@@ -123,5 +123,17 @@ public class Local {
      */
     public void setPlaces(int places) {
         this.places = places;
+    }
+    /**
+     * methode permettant d'afficher un local
+     * @return les informations du local
+     */
+    @Override
+    public String toString() {
+        return "Local{" +
+                "id=" + id +
+                ", sigle='" + sigle + '\'' +
+                ", places=" + places +
+                '}';
     }
 }
