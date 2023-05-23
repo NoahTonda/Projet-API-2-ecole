@@ -294,7 +294,7 @@ public class GestCours {
                 String maitrise= rs.getString(3);
                 System.out.println("matière : "+nm+", formateur : "+nf+", maitrise : "+maitrise);
             }
-            if(!trouve) System.out.println("aucun cours trouvée");
+            if(!trouve) System.out.println("aucun cours trouvé");
         } catch (SQLException e) {
             System.out.println("erreur sql :"+e);
         }

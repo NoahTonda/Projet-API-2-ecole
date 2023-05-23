@@ -155,11 +155,6 @@ public class Formateur {
      */
     @Override
     public String toString() {
-        return "Formateur{" +
-                "id=" + id +
-                ", mail='" + mail + '\'' +
-                ", nom='" + nom + '\'' +
-                ", prenom='" + prenom + '\'' +
-                '}';
+        return "id :"+ id+", nom :'" + nom +"'"+ ", prenom :'" + prenom +"'"+ ", mail :'" + mail+"'";
     }
 }

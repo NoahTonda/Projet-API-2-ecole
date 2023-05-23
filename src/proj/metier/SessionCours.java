@@ -29,6 +29,9 @@ public class SessionCours {
      * Le cours donné lors des sessions
      */
     private Cours cours;
+
+
+
     /**
      * Le formateur qui donne le cours
      */
@@ -110,6 +113,13 @@ public class SessionCours {
     public Cours getCours() {
         return cours;
     }
+    /**
+     * getter du formateur donnant la session
+     * @return le formateur donnant la session
+     */
+    public Formateur getFormateur() {
+        return formateur;
+    }
 
     /**
      * setter du cours donné
@@ -136,6 +146,14 @@ public class SessionCours {
     }
 
     /**
+     * setter du formateur donnant la session
+     * @param formateur formateur donnant la session
+     */
+    public void setFormateur(Formateur formateur) {
+        this.formateur = formateur;
+    }
+
+    /**
      *
      * @param id
      * @param dateDebut
@@ -145,6 +163,7 @@ public class SessionCours {
      * @param formateur
      * @param local
      */
+
     public SessionCours(int id, LocalDate dateDebut, LocalDate dateFin, int nbreInscrits, Cours cours,Formateur formateur, Local local) {
         this.id = id;
         this.dateDebut = dateDebut;
@@ -161,14 +180,8 @@ public class SessionCours {
      */
     @Override
     public String toString() {
-        return "SessionCours{" +
-                "id=" + id +
-                ", dateDebut=" + dateDebut +
-                ", dateFin=" + dateFin +
-                ", nbreInscrits=" + nbreInscrits +
-                ", cours=" + cours +
-                ", formateur=" + formateur +
-                ", local=" + local +
-                '}';
+        return "cours :" + cours + ", dateDebut :" + dateDebut + ", dateFin :" + dateFin + ", nbreInscrits :" + nbreInscrits +
+                "\nformateur = " + formateur +
+                "\nlocal = " + local;
     }
 }

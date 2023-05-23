@@ -127,10 +127,6 @@ public class Cours {
      */
     @Override
     public String toString() {
-        return "Cours{" +
-                "id=" + id +
-                ", matiere='" + matiere + '\'' +
-                ", nbreHeures=" + nbreHeures +
-                '}';
+        return "matiere :'" + matiere +"'"+ ", nombre d'heures de cours :" + nbreHeures;
     }
 }
