@@ -1,47 +1,60 @@
 package mvp;
 
 import mvp.model.*;
-import mvp.presenter.CoursPresenter;
-import mvp.presenter.FormateurPresenter;
-import mvp.presenter.LocalPresenter;
+import mvp.presenter.*;
 import mvp.view.*;
-import proj.metier.SessionCours;
+import proj.metier.*;
 import utilitaires.Utilitaire;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class GestProjet {
-    private DAOCours cm;
-    private DAOFormateur fm;
-    private DAOLocal lm;
-    private DAOSessionCours sm;
+    private DAO<Cours> cm;
+    private DAO<Formateur> fm;
+    private DAO<Local> lm;
+    private DAO<SessionCours> sm;
+    private DAO<Maitrise> mm;
     private CoursPresenter cp;
     private FormateurPresenter fp;
     private LocalPresenter lp;
     private SessionCoursPresenter sp;
-    private CoursViewInterface cv;
-    private FormateurViewInterface fv;
-    private LocalViewInterface lv;
-    private SessionCoursViewInterface sv;
+    private MaitrisePresenter mp;
+    private ViewInterface<Cours> cv;
+    private ViewInterface<Formateur> fv;
+    private ViewInterface<Local> lv;
+    private ViewInterface<SessionCours> sv;
+    private ViewInterface<Maitrise> mv;
 
     public void gestion(){
         cm=new CoursModelDB();
-        fm=new FormateurModelDB();
-        lm=new LocalModelDB();
-        sm=new SessionCoursModelDB();
-
         cv=new CoursViewConsole();
-        fv=new FormateurViewConsole();
-        lv=new LocalViewConsole();
-        sv=new SessionCoursViewConsole();
-
         cp=new CoursPresenter(cm,cv);
+
+        fm=new FormateurModelDB();
+        fv=new FormateurViewConsole();
         fp=new FormateurPresenter(fm,fv);
+
+        lm=new LocalModelDB();
+        lv=new LocalViewConsole();
         lp=new LocalPresenter(lm,lv);
+
+        sm=new SessionCoursModelDB();
+        sv=new SessionCoursViewConsole();
         sp=new SessionCoursPresenter(sm,sv);
 
-        List<String> loptions = Arrays.asList("Cours","formateur","Fin");
+        mm=new MaitriseModelDB();
+        mv=new MaitriseViewConsole();
+        mp=new MaitrisePresenter(mm,mv);
+
+        ((SpecialSessionCoursPresenter)sp).setCoursPresenter(cp);
+        ((SpecialSessionCoursPresenter)sp).setFormateurPresenter(fp);
+        ((SpecialSessionCoursPresenter)sp).setLocalPresenter(lp);
+
+        ((SpecialMaitrisePresenter)mp).setCoursPresenter(cp);
+        ((SpecialMaitrisePresenter)mp).setFormateurPresenter(fp);
+
+        List<String> loptions = Arrays.asList("Cours","formateur","Local","Session Cours","Maitrise","Fin");
         do{
             int ch= Utilitaire.choixListe(loptions);
             switch (ch){
@@ -53,7 +66,9 @@ public class GestProjet {
                     break;
                 case 4: sp.start();
                     break;
-                case 5: System.exit(0);
+                case 5: mp.start();
+                    break;
+                case 6: System.exit(0);
             }
         }
         while(true);

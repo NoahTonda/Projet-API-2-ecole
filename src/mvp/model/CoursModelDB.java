@@ -1,5 +1,6 @@
 package mvp.model;
 import myconnections.DBConnection;
+import oracle.jdbc.OracleTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import proj.metier.Cours;
@@ -13,21 +14,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoursModelDB implements DAOCours, CoursSpecial {
+public class CoursModelDB implements DAO<Cours>,CoursSpecial {
     private static final Logger logger = LogManager.getLogger(CoursModelDB.class);
     protected Connection dbConnect;
 
     public CoursModelDB(){
         dbConnect = DBConnection.getConnection();
         if (dbConnect == null) {
-            // System.err.println("erreur de connexion");
             logger.error("erreur de connexion");
             System.exit(1);
         }
         logger.info("connexion établie");
     }
     @Override
-    public Cours addCours(Cours cours) {
+    public Cours add(Cours cours) {
         String matière = cours.getMatiere();
         int nbreHeures = cours.getNbreHeures();
         String query1 = "insert into APICOURS(matière,nbreHeures) values(?,?)";
@@ -56,9 +56,7 @@ public class CoursModelDB implements DAOCours, CoursSpecial {
             return null;
         }
     }
-    @Override
-    public Cours readCours(int idCours){
-        boolean flag=false;
+    public Cours read(int idCours){
         String query = "select * from APICOURS where id_cours = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)){
             pstm.setInt(1,idCours);
@@ -76,14 +74,16 @@ public class CoursModelDB implements DAOCours, CoursSpecial {
         }
     }
     @Override
-    public Cours updateCours(Cours cours) {
+    public Cours update(Cours cours) {
         String query = "update APICOURS set matière=?,nbreheures=? where id_cours=?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)){
             pstm.setString(1, cours.getMatiere());
             pstm.setInt(2,cours.getNbreHeures());
             pstm.setInt(3,cours.getId());
             int n=pstm.executeUpdate();
-            if (n!=0) return readCours(cours.getId());
+            if (n!=0) {
+                return read(cours.getId());
+            }
             else return null;
         }catch(SQLException e){
             System.out.println("erreur SQL : "+e);
@@ -91,7 +91,7 @@ public class CoursModelDB implements DAOCours, CoursSpecial {
         }
     }
     @Override
-    public boolean removeCours(Cours cours) {
+    public boolean remove(Cours cours) {
         String query = "delete from APICOURS where id_cours=?";
         try(PreparedStatement pstm=dbConnect.prepareStatement(query)){
             pstm.setInt(1,cours.getId());
@@ -103,27 +103,33 @@ public class CoursModelDB implements DAOCours, CoursSpecial {
             return false;
         }
     }
+    //utilisation d'une fonction sql de mme Legrand
     @Override
-    public List<Cours> getCours() {
+    public List<Cours> getAll() {
         List<Cours> lc=new ArrayList<>();
-        String query="select * from APICOURS";
-        try(Statement stm = dbConnect.createStatement()) {
-            ResultSet rs = stm.executeQuery(query);
-            while(rs.next()){
-                int id_cours = rs.getInt(1);
-                String matière = rs.getString(2);
-                int nbreHeures = rs.getInt(3);
-                Cours c = new Cours(id_cours,matière,nbreHeures);
-                lc.add(c);
+        try (CallableStatement stmt = dbConnect.prepareCall("{? = call GetAllCours}")) {
+            try {
+                // Enregistrer le type de retour de la fonction
+                stmt.registerOutParameter(1, OracleTypes.CURSOR);
+                // Exécuter la fonction
+                stmt.execute();
+                // Récupérer le curseur de résultat
+                ResultSet rs = (ResultSet) stmt.getObject(1);
+                while (rs.next()) {
+                    int idCours = rs.getInt("id_cours");
+                    String matiere = rs.getString("matière");
+                    int nbreHeures = rs.getInt("nbreheures");
+                    lc.add(new Cours(idCours,matiere,nbreHeures));
+                }
+            } catch (SQLException e) {
+                System.out.println("erreur sql :" + e);
             }
-            return lc;
         } catch (SQLException e) {
-            System.out.println("erreur sql :"+e);
-            return null;
+            throw new RuntimeException(e);
         }
+        return lc;
     }
-
-    @Override
+        @Override
     public List<SessionCours> sessionLoc(Cours cours) {
         String query="select * from APISESSIONCOURS where id_cours=?";
         return rechercheSessionCours(cours,query);

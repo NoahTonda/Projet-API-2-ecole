@@ -3,6 +3,8 @@ package utilitaires;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,12 +14,19 @@ public class Utilitaire {
        affListe(l);
        return choixElt(l);
     }
-
+    public static String choixMaitrise(){
+        List l = new ArrayList<>(Arrays.asList("un peu compétent", "moyennement compétent", "très compétent"));
+        do {
+            int ch=choixListe(l);
+            return l.get(ch-1).toString();
+        }while(true);
+    }
     public static void affListe(List l){
         int i =1;
         for(Object o :l) {
             System.out.println((i++)+"."+o);
         }
+        System.out.println("-------------------------");
     }
 
     public static int choixElt(List l){

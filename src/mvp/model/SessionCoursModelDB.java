@@ -1,4 +1,5 @@
 package mvp.model;
+import mvp.presenter.SessionCoursPresenter;
 import myconnections.DBConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,21 +13,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SessionCoursModelDB implements DAOSessionCours {
+public class SessionCoursModelDB implements DAO<SessionCours> {
     private static final Logger logger = LogManager.getLogger(SessionCoursModelDB.class);
     protected Connection dbConnect;
 
     public SessionCoursModelDB(){
         dbConnect = DBConnection.getConnection();
         if (dbConnect == null) {
-            // System.err.println("erreur de connexion");
             logger.error("erreur de connexion");
             System.exit(1);
         }
         logger.info("connexion établie");
     }
     @Override
-    public SessionCours addSessionCours(SessionCours sessionCours) {
+    public SessionCours add(SessionCours sessionCours) {
         LocalDate dateDebut = sessionCours.getDateDebut();
         LocalDate dateFin = sessionCours.getDateFin();
         int nbreInscrits = sessionCours.getNbreInscrits();
@@ -68,7 +68,7 @@ public class SessionCoursModelDB implements DAOSessionCours {
         }
     }
     @Override
-    public SessionCours readSessionCours(int idSessionCours){
+    public SessionCours read(int idSessionCours){
         boolean flag=false;
         String query = "select * from APISESSIONCOURS where id_sessionCours = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)){
@@ -78,9 +78,12 @@ public class SessionCoursModelDB implements DAOSessionCours {
                 LocalDate dateDebut = rs.getDate(2).toLocalDate();
                 LocalDate dateFin = rs.getDate(3).toLocalDate();
                 int nbreInscrits = rs.getInt(4);
-                Cours cours = rs.getObject(5, Cours.class);
-                Formateur formateur = rs.getObject(6, Formateur.class);
-                Local local = rs.getObject(7, Local.class);
+                int idCours = rs.getInt(5);
+                Cours cours = rechercheCours(idCours);
+                int idLocal = rs.getInt(6);
+                Local local = rechercheLocal(idLocal);
+                int idFormateur = rs.getInt(7);
+                Formateur formateur = rechercheFormateur(idFormateur);
                 SessionCours s= new SessionCours(idSessionCours,dateDebut,dateFin,nbreInscrits,cours,formateur,local);
                 return s;
             }
@@ -91,7 +94,7 @@ public class SessionCoursModelDB implements DAOSessionCours {
         }
     }
     @Override
-    public SessionCours updateSessionCours(SessionCours sessionCours) {
+    public SessionCours update(SessionCours sessionCours) {
         String query = "update APISESSIONCOURS set dateDebut=?,dateFin=?,nbreInscrits=?,id_Cours=?,id_Local=?,id_Formateur=? where id_sessionCours=?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)){
             pstm.setDate(1,Date.valueOf(sessionCours.getDateDebut()));
@@ -100,8 +103,9 @@ public class SessionCoursModelDB implements DAOSessionCours {
             pstm.setInt(4,sessionCours.getCours().getId());
             pstm.setInt(5,sessionCours.getLocal().getId());
             pstm.setInt(6,sessionCours.getFormateur().getId());
+            pstm.setInt(7,sessionCours.getId());
             int n=pstm.executeUpdate();
-            if (n!=0) return readSessionCours(sessionCours.getId());
+            if (n!=0) return read(sessionCours.getId());
             else return null;
         }catch(SQLException e){
             System.out.println("erreur SQL : "+e);
@@ -109,7 +113,7 @@ public class SessionCoursModelDB implements DAOSessionCours {
         }
     }
     @Override
-    public boolean removeSessionCours(SessionCours sessionCours) {
+    public boolean remove(SessionCours sessionCours) {
         String query = "delete from APISESSIONCOURS where id_sessionCours=?";
         try(PreparedStatement pstm=dbConnect.prepareStatement(query)){
             pstm.setInt(1,sessionCours.getId());
@@ -121,7 +125,7 @@ public class SessionCoursModelDB implements DAOSessionCours {
         }
     }
     @Override
-    public List<SessionCours> getSessionCours() {
+    public List<SessionCours> getAll() {
         List<SessionCours> ls=new ArrayList<>();
         String query="select * from APISESSIONCOURS";
         try(Statement stm = dbConnect.createStatement()) {
@@ -131,9 +135,12 @@ public class SessionCoursModelDB implements DAOSessionCours {
                 LocalDate dateDebut = rs.getDate(2).toLocalDate();
                 LocalDate dateFin = rs.getDate(3).toLocalDate();
                 int nbreInscrits = rs.getInt(4);
-                Cours cours = rs.getObject(5, Cours.class);
-                Formateur formateur = rs.getObject(6, Formateur.class);
-                Local local = rs.getObject(7, Local.class);
+                int idCours = rs.getInt(5);
+                Cours cours = rechercheCours(idCours);
+                int idLocal = rs.getInt(6);
+                Local local = rechercheLocal(idLocal);
+                int idFormateur = rs.getInt(7);
+                Formateur formateur = rechercheFormateur(idFormateur);
                 SessionCours s = new SessionCours(id_sessionCours,dateDebut,dateFin,nbreInscrits,cours, formateur, local);
                 ls.add(s);
             }
@@ -142,8 +149,57 @@ public class SessionCoursModelDB implements DAOSessionCours {
             System.out.println("erreur sql :"+e);
             return null;
         }
+
     }
-
-
+    private Formateur rechercheFormateur(int fid) {
+        String query = "select * from APIFORMATEUR where id_formateur=?";
+        Formateur formateur;
+        try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, fid);
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) {
+                String mail = rs.getString(2);
+                String nom = rs.getString(3);
+                String prénom = rs.getString(4);
+                formateur = new Formateur(fid, mail, nom, prénom);
+                return formateur;
+            } else System.out.println("record formateur introuvable");
+        } catch (SQLException e) {
+            System.out.println("erreur sql :"+e);
+        }
+        return null;
+    }
+    private Local rechercheLocal(int lid) {
+        String query = "select * from APILOCAL where id_local=?";
+        Local local=null;
+        try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, lid);
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) {
+                String sigle = rs.getString(2);
+                int places = rs.getInt(3);
+                local = new Local(lid, sigle, places);
+            } else System.out.println("record local introuvable");
+        } catch (SQLException e) {
+            System.out.println("erreur sql :"+e);
+        }
+        return local;
+    }
+    private Cours rechercheCours(int cid) {
+        String query = "select * from APICOURS where id_cours=?";
+        Cours cours=null;
+        try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, cid);
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) {
+                String matière = rs.getString(2);
+                int nbreHeures = rs.getInt(3);
+                cours = new Cours(cid,matière,nbreHeures);
+            } else System.out.println("record cours introuvable");
+        } catch (SQLException e) {
+            System.out.println("erreur sql :"+e);
+        }
+        return cours;
+    }
 }
 

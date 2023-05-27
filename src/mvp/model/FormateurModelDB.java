@@ -8,21 +8,20 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FormateurModelDB implements DAOFormateur {
+public class FormateurModelDB implements DAO<Formateur> {
     private static final Logger logger = LogManager.getLogger(FormateurModelDB.class);
     protected Connection dbConnect;
 
     public FormateurModelDB(){
         dbConnect = DBConnection.getConnection();
         if (dbConnect == null) {
-            // System.err.println("erreur de connexion");
             logger.error("erreur de connexion");
             System.exit(1);
         }
         logger.info("connexion établie");
     }
     @Override
-    public Formateur addFormateur(Formateur formateur) {
+    public Formateur add(Formateur formateur) {
         String mail = formateur.getMail();
         String nom = formateur.getNom();
         String prenom = formateur.getPrenom();
@@ -55,7 +54,7 @@ public class FormateurModelDB implements DAOFormateur {
         }
     }
     @Override
-    public Formateur readFormateur(int idFormateur){
+    public Formateur read(int idFormateur){
         boolean flag=false;
         String query = "select * from APIFORMATEUR where id_formateur = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)){
@@ -75,7 +74,7 @@ public class FormateurModelDB implements DAOFormateur {
         }
     }
     @Override
-    public Formateur updateFormateur(Formateur formateur) {
+    public Formateur update(Formateur formateur) {
         String query = "update APIFORMATEUR set mail=?,nom=?,prénom=? where id_formateur=?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)){
             pstm.setString(1, formateur.getMail());
@@ -83,7 +82,7 @@ public class FormateurModelDB implements DAOFormateur {
             pstm.setString(3,formateur.getPrenom());
             pstm.setInt(4,formateur.getId());
             int n=pstm.executeUpdate();
-            if (n!=0) return readFormateur(formateur.getId());
+            if (n!=0) return read(formateur.getId());
             else return null;
         }catch(SQLException e){
             System.out.println("erreur SQL : "+e);
@@ -91,7 +90,7 @@ public class FormateurModelDB implements DAOFormateur {
         }
     }
     @Override
-    public boolean removeFormateur(Formateur formateur) {
+    public boolean remove(Formateur formateur) {
         String query = "delete from APIFORMATEUR where id_formateur=?";
         try(PreparedStatement pstm=dbConnect.prepareStatement(query)){
             pstm.setInt(1,formateur.getId());
@@ -104,7 +103,7 @@ public class FormateurModelDB implements DAOFormateur {
         }
     }
     @Override
-    public List<Formateur> getFormateur() {
+    public List<Formateur> getAll() {
         List<Formateur> lf=new ArrayList<>();
         String query="select * from APIFORMATEUR";
         try(Statement stm = dbConnect.createStatement()) {

@@ -1,107 +1,69 @@
 package mvp.view;
 
 import mvp.presenter.SessionCoursPresenter;
+import proj.metier.Cours;
+import proj.metier.Formateur;
+import proj.metier.Local;
 import proj.metier.SessionCours;
+import utilitaires.Utilitaire;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
 
 import static utilitaires.Utilitaire.*;
-import static utilitaires.Utilitaire.choixListe;
-
-public class SessionCoursViewConsole implements SessionCoursViewInterface{
-    private SessionCoursPresenter presenter;
-    private List<SessionCours> ls;
-    private Scanner sc = new Scanner(System.in);
+public class SessionCoursViewConsole extends AbstractViewConsole<SessionCours>{
     public SessionCoursViewConsole(){
 
     }
-    @Override
-    public void setPresenter(SessionCoursPresenter presenter){this.presenter=presenter;}
+    protected void modifier() {
+        int nl = choixListe(ldatas) - 1;
 
-    @Override
-    public void setListDatas(List<SessionCours> sessionCourss) {
-        this.ls = sessionCourss;
-        affListe(ls);
-        menu();
-    }
-
-    @Override
-    public void affMsg(String msg) {
-        System.out.println("information:" + msg);
-    }
-
-    @Override
-    public void affList(List infos) {
-        affListe(infos);
-    }
-    public void menu() {
-        do {
-
-            int ch = choixListe(Arrays.asList("ajout", "retrait", "rechercher", "modifier", "fin"));
-            switch (ch) {
-                case 1:
-                    ajouter();
-                    break;
-                case 2:
-                    retirer();
-                    break;
-                case 3:
-                    rechercher();
-                    break;
-                case 4:
-                    modifier();
-                    break;
-                case 5:
-                    return;
-            }
-        } while (true);
-    }
-    private void modifier() {
-        int nl = choixListe(ls) - 1;
-
-        SessionCours sessionCours = ls.get(nl);
+        SessionCours sessionCours = ldatas.get(nl);
         LocalDate dateDebut = LocalDate.parse(modifyIfNotBlank("date de début", String.valueOf(sessionCours.getDateDebut())));
-        String nom = modifyIfNotBlank("nom", sessionCours.getNom());
-        String prenom = modifyIfNotBlank("prenom", sessionCours.getPrenom());
-        presenter.update(new SessionCours(sessionCours.getId(), mail,nom, prenom));
-        ls = presenter.getAll();
-        affListe(ls);
+        LocalDate fin = LocalDate.parse(modifyIfNotBlank("date de fin", String.valueOf(sessionCours.getDateFin())));
+        int inscrits = Integer.parseInt(modifyIfNotBlank("nombre d'élèves inscrits", ""+sessionCours.getNbreInscrits()));
+        System.out.println("cours");
+        Cours c = ((SessionCoursPresenter)presenter).choixCours();
+        System.out.println("Local");
+        Local l = ((SessionCoursPresenter)presenter).choixLocal();
+        System.out.println("Formateur");
+        Formateur f = ((SessionCoursPresenter)presenter).choixFormateur();
+        presenter.update(new SessionCours(sessionCours.getId(), dateDebut,fin,inscrits,c,f,l));
+        ldatas = presenter.getAll();
+        affListe(ldatas);
     }
 
-    private void rechercher() {
+    protected void rechercher() {
         System.out.println("idSessionCours : ");
         int idSessionCours = sc.nextInt();
         presenter.search(idSessionCours);
     }
 
 
-    private void retirer() {
-        int del = choixListe(ls)-1;
-        SessionCours SessionCours=ls.get(del);
-        presenter.removeSessionCours(SessionCours);
-        ls=presenter.getAll();
-        affList(ls);
+    protected void retirer() {
+        int del = choixListe(ldatas)-1;
+        SessionCours SessionCours=ldatas.get(del);
+        presenter.remove(SessionCours);
+        ldatas=presenter.getAll();
+        affList(ldatas);
     }
 
-    private void ajouter() {
-        System.out.println("mail :");
-        String mail = sc.nextLine();
-        System.out.println("nom :");
-        String nom = sc.nextLine();
-        System.out.println("prénom : ");
-        String prenom = sc.nextLine();
-        presenter.addSessionCours(new SessionCours(0,mail, nom,prenom));
-        ls=presenter.getAll();
+    protected void ajouter() {
+        System.out.println("date début :");
+        LocalDate debut= Utilitaire.lecDate();
+        System.out.println("date fin :");
+        LocalDate fin= Utilitaire.lecDate();
+        System.out.println("nombre d'élèves inscrits : ");
+        int inscrits = sc.nextInt();
+        System.out.println("Cours :");
+        Cours c = ((SessionCoursPresenter)presenter).choixCours();
+        System.out.println("Local :");
+        Local l = ((SessionCoursPresenter)presenter).choixLocal();
+        System.out.println("Formateur :");
+        Formateur f = ((SessionCoursPresenter)presenter).choixFormateur();
+        presenter.add(new SessionCours(0, debut,fin,inscrits,c,f,l));
+        ldatas=presenter.getAll();
     }
-
-    @Override
-    public SessionCours selectionner(List<SessionCours> ls) {
-        int nl = choixListe(ls);
-        SessionCours SessionCours = ls.get(nl - 1);
-        return SessionCours;
+    protected void special() {
+        System.out.println("Il n'y a pas de requetes spéciales");
     }
 }

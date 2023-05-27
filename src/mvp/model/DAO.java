@@ -9,7 +9,7 @@ public interface DAO<T> {
     boolean remove(T t);
     T update(T t);
 
-    T read(T rech);
+    T read(int rech);
 
     List<T> getAll();
 }

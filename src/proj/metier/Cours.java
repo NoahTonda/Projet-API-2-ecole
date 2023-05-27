@@ -1,5 +1,8 @@
 package proj.metier;
 
+import utilitaires.Utilitaire;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,6 +12,7 @@ import java.util.List;
  * @see SessionCours
  */
 public class Cours {
+
      /**
      * id du cours
      */
@@ -24,7 +28,7 @@ public class Cours {
     /**
      * liste des spécialistes de cette matière
      */
-    private List<Maitrise> specialite;
+    private List<Maitrise> specialite=new ArrayList<>();
     /**
      * liste des sessions de ce cours
      */
@@ -127,6 +131,7 @@ public class Cours {
      */
     @Override
     public String toString() {
+        Utilitaire.affListe(specialite);
         return "matiere :'" + matiere +"'"+ ", nombre d'heures de cours :" + nbreHeures;
     }
 }

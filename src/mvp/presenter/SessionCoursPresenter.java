@@ -1,60 +1,39 @@
 package mvp.presenter;
 
-import mvp.model.DAOSessionCours;
-import mvp.view.SessionCoursViewInterface;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import mvp.model.DAO;
+import mvp.view.ViewInterface;
+import proj.metier.Cours;
+import proj.metier.Formateur;
+import proj.metier.Local;
 import proj.metier.SessionCours;
 
-import java.util.List;
+public class SessionCoursPresenter extends Presenter<SessionCours> implements SpecialSessionCoursPresenter {
+    private Presenter<Cours> coursPresenter;
+    private Presenter<Local> localPresenter;
+    private Presenter<Formateur> formateurPresenter;
 
-public class SessionCoursPresenter {
-    private DAOSessionCours model;
-    private SessionCoursViewInterface view;
-
-    private static final Logger logger = LogManager.getLogger(SessionCoursPresenter.class);
-
-    public SessionCoursPresenter(DAOSessionCours model, SessionCoursViewInterface view) {
-        this.model = model;
-        this.view = view;
-        this.view.setPresenter(this);
-    }
-    public void start() {
-        view.setListDatas(getAll());
+    public SessionCoursPresenter(DAO<SessionCours> model, ViewInterface<SessionCours> view) {
+        super(model, view);
     }
 
-    public List<SessionCours> getAll(){
-        return model.getSessionCours();
-    }
-    public void addSessionCours(SessionCours SessionCours) {
-        SessionCours f = model.addSessionCours(SessionCours);
-        if(f!=null) view.affMsg("création de :"+f);
-        else view.affMsg("erreur de création");
-    }
-
-
-    public void removeSessionCours(SessionCours SessionCours) {
-        boolean ok = model.removeSessionCours(SessionCours);
-        if(ok) view.affMsg("SessionCours effacé");
-        else view.affMsg("SessionCours non effacé");
+    @Override
+    public void setCoursPresenter(Presenter<Cours> coursPresenter){this.coursPresenter=coursPresenter;}
+    @Override
+    public void setLocalPresenter(Presenter<Local> localPresenter){this.localPresenter=localPresenter;}
+    @Override
+    public void setFormateurPresenter(Presenter<Formateur> formateurPresenter){this.formateurPresenter=formateurPresenter;}
+    @Override
+    public Cours choixCours() {
+        return coursPresenter.selection();
     }
 
-    public SessionCours selectionner() {
-        logger.info("appel de sélection");
-        SessionCours f = view.selectionner(model.getSessionCours());
-        return f;
+    @Override
+    public Local choixLocal() {
+        return localPresenter.selection();
     }
 
-    public void update(SessionCours SessionCours) {
-        SessionCours f =model.updateSessionCours(SessionCours);
-        if(f==null) view.affMsg("mise à jour infrucueuse");
-        else view.affMsg("mise à jour effectuée : "+f);
-    }
-
-    public SessionCours search(int idSessionCours) {
-        SessionCours f = model.readSessionCours(idSessionCours);
-        if(f==null) view.affMsg("recherche infructueuse");
-        else view.affMsg(f.toString());
-        return f;
+    @Override
+    public Formateur choixFormateur() {
+        return formateurPresenter.selection();
     }
 }

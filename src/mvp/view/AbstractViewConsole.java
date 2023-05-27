@@ -17,9 +17,8 @@
         }
 
         @Override
-        public void setListDatas(List<T> ldatas, Comparator<T> cmp) {
+        public void setListDatas(List<T> ldatas) {
             this.ldatas = ldatas;
-            this.ldatas.sort(cmp);
             affListe(ldatas);
             menu();
         }
@@ -53,7 +52,6 @@
                         modifier();
                         break;
                     case 5:
-                        affListe(ldatas);
                         special();
                         break;
                     case 6:
@@ -62,11 +60,16 @@
             } while (true);
         }
         protected void retirer() {
-            int choix = choixElt(ldatas);
-            T elt= ldatas.get(choix-1);
-            presenter.remove(elt);
-            ldatas=presenter.getAll();//rafraichissement
-            affListe(ldatas);
+            if (ldatas.isEmpty()){
+                System.out.println("il n'y a pas d'éléments à retirer");
+            }
+            else {
+                int choix = choixListe(ldatas);
+                T elt = ldatas.get(choix - 1);
+                presenter.remove(elt);
+                ldatas = presenter.getAll();//rafraichissement
+                affListe(ldatas);
+            }
         }
        @Override
         public T selectionner(List<T> l) {

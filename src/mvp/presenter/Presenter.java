@@ -9,22 +9,19 @@ import java.util.List;
 public abstract class Presenter<T> {
     protected  DAO<T> model;
     protected  ViewInterface<T> view;
-    protected Comparator<T> cmp;
-    public Presenter(DAO<T> model, ViewInterface<T> view, Comparator<T> cmp) {
+    public Presenter(DAO<T> model, ViewInterface<T> view) {
         this.model = model;
         this.view = view;
         this.view.setPresenter(this);
-        this.cmp=cmp;
     }
 
     public void start() {
 
-        view.setListDatas(getAll(),cmp);
+        view.setListDatas(getAll());
     }
 
     public List<T> getAll(){
         List<T> l = model.getAll();
-        l.sort(cmp);
         return l;
     }
 
@@ -49,10 +46,16 @@ public abstract class Presenter<T> {
 
     }
 
-    public void search(T rech) {
+    public T search(int rech) {
          T elt= model.read(rech);
-        if(elt==null) view.affMsg("recherche infructueuse");
-        else view.affMsg(elt.toString());
+        if(elt==null) {
+            view.affMsg("recherche infructueuse");
+            return null;
+        }
+        else {
+            view.affMsg(elt.toString());
+            return elt;
+        }
     }
 
     public T selection(){

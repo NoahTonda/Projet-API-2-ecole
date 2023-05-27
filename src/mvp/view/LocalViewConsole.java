@@ -1,6 +1,7 @@
 package mvp.view;
 
 import mvp.presenter.LocalPresenter;
+import mvp.presenter.SpecialLocalPresenter;
 import proj.metier.Local;
 
 import java.util.Arrays;
@@ -10,93 +11,65 @@ import java.util.Scanner;
 import static utilitaires.Utilitaire.*;
 import static utilitaires.Utilitaire.choixListe;
 
-public class LocalViewConsole implements LocalViewInterface{
-    private LocalPresenter presenter;
-    private List<Local> lf;
-    private Scanner sc = new Scanner(System.in);
+public class LocalViewConsole extends AbstractViewConsole<Local> implements SpecialLocalViewConsole{
     public LocalViewConsole(){
 
     }
-    @Override
-    public void setPresenter(LocalPresenter presenter){this.presenter=presenter;}
 
-    @Override
-    public void setListDatas(List<Local> locaux) {
-        this.lf = locaux;
-        affListe(lf);
-        menu();
-    }
+    protected void modifier() {
+        int nl = choixListe(ldatas) - 1;
 
-    @Override
-    public void affMsg(String msg) {
-        System.out.println("information:" + msg);
-    }
-
-    @Override
-    public void affList(List infos) {
-        affListe(infos);
-    }
-    public void menu() {
-        do {
-
-            int ch = choixListe(Arrays.asList("ajout", "retrait", "rechercher", "modifier", "fin"));
-            switch (ch) {
-                case 1:
-                    ajouter();
-                    break;
-                case 2:
-                    retirer();
-                    break;
-                case 3:
-                    rechercher();
-                    break;
-                case 4:
-                    modifier();
-                    break;
-                case 5:
-                    return;
-            }
-        } while (true);
-    }
-    private void modifier() {
-        int nl = choixListe(lf) - 1;
-
-        Local local = lf.get(nl);
+        Local local = ldatas.get(nl);
         String sigle = modifyIfNotBlank("sigle", local.getSigle());
         int places = Integer.parseInt(modifyIfNotBlank("places", ""+local.getPlaces()));
         presenter.update(new Local(local.getId(), sigle,places));
-        lf = presenter.getAll();
-        affListe(lf);
+        ldatas = presenter.getAll();
+        affListe(ldatas);
     }
 
-    private void rechercher() {
+    protected void rechercher() {
         System.out.println("idLocal : ");
         int idLocal = sc.nextInt();
         presenter.search(idLocal);
     }
 
 
-    private void retirer() {
-        int del = choixListe(lf)-1;
-        Local Local=lf.get(del);
-        presenter.removeLocal(Local);
-        lf=presenter.getAll();
-        affList(lf);
+    protected void retirer() {
+        int del = choixListe(ldatas)-1;
+        Local Local=ldatas.get(del);
+        presenter.remove(Local);
+        ldatas=presenter.getAll();
+        affList(ldatas);
     }
 
-    private void ajouter() {
+    protected void ajouter() {
         System.out.println("sigle :");
         String sigle = sc.nextLine();
         System.out.println("places :");
         int places = sc.nextInt();
-        presenter.addLocal(new Local(0,sigle, places));
-        lf=presenter.getAll();
+        presenter.add(new Local(0,sigle, places));
+        ldatas=presenter.getAll();
     }
+    protected void special() {
+        do {
+            int ch = choixListe(Arrays.asList("locaux disponibles pour n élèves", "fin" ));
+
+            switch (ch) {
+                case 1:
+                    GetAvailableLocals();
+                    break;
+                case 2:
+                    return;
+                default:
+                    System.out.println("choix invalide recommencez ");
+            }
+        } while (true);    }
+
 
     @Override
-    public Local selectionner(List<Local> lf) {
-        int nl = choixListe(lf);
-        Local Local = lf.get(nl - 1);
-        return Local;
+    public void GetAvailableLocals() {
+        System.out.println("nombre d'élèves inscrits : ");
+        int inscrits=sc.nextInt();
+        ((SpecialLocalPresenter)presenter).GetAvailableLocals(inscrits);
     }
 }
