@@ -144,6 +144,36 @@ public class CoursModelDB implements DAO<Cours>,CoursSpecial {
         String query="select * from APISESSIONCOURS where id_cours=? and datefin>? and datefin<?";
         return rechercheSessionDate(cours,query);
     }
+    //utilisation d'une fonction sql de mme Legrand
+    @Override
+    public List<Formateur> get_available_formateurs(Cours cours) {
+        List<Formateur> lf=new ArrayList<>();
+        try (CallableStatement stmt = dbConnect.prepareCall("{?=call get_available_formateur(?)")) {
+            try {
+                // Enregistrer le type de retour de la fonction
+                stmt.registerOutParameter(1, OracleTypes.CURSOR);
+                stmt.setInt(2,cours.getId());
+                // Exécuter la fonction
+                stmt.execute();
+                // Récupérer le curseur de résultat
+                ResultSet rs = (ResultSet) stmt.getObject(1);
+                while (rs.next()) {
+                    int id_Formateur = rs.getInt(1);
+                    String mail = rs.getString(2);
+                    String nom = rs.getString(3);
+                    String prenom = rs.getString(4);
+                    Formateur f = new Formateur(id_Formateur,mail,nom,prenom);
+                    lf.add(f);
+                }
+            } catch (SQLException e) {
+                System.out.println("erreur sql :" + e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return lf;
+    }
+
     private List<String> rechercheVueCours(Cours cours,String query){
         List<String> ls=new ArrayList<>();
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {

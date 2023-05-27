@@ -57,18 +57,13 @@ public class GestProjet {
         List<String> loptions = Arrays.asList("Cours","formateur","Local","Session Cours","Maitrise","Fin");
         do{
             int ch= Utilitaire.choixListe(loptions);
-            switch (ch){
-                case 1: cp.start();
-                    break;
-                case 2: fp.start();
-                    break;
-                case 3: lp.start();
-                    break;
-                case 4: sp.start();
-                    break;
-                case 5: mp.start();
-                    break;
-                case 6: System.exit(0);
+            switch (ch) {
+                case 1 -> cp.start();
+                case 2 -> fp.start();
+                case 3 -> lp.start();
+                case 4 -> sp.start();
+                case 5 -> mp.start();
+                case 6 -> System.exit(0);
             }
         }
         while(true);

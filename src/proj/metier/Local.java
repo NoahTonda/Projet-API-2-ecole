@@ -130,6 +130,6 @@ public class Local {
      */
     @Override
     public String toString() {
-        return "sigle :'" + sigle +"'"+ ", places :" + places;
+        return "sigle :'" + sigle +"'"+ ", places :" + places+"\n";
     }
 }

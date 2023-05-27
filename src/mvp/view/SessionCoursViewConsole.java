@@ -39,14 +39,6 @@ public class SessionCoursViewConsole extends AbstractViewConsole<SessionCours>{
     }
 
 
-    protected void retirer() {
-        int del = choixListe(ldatas)-1;
-        SessionCours SessionCours=ldatas.get(del);
-        presenter.remove(SessionCours);
-        ldatas=presenter.getAll();
-        affList(ldatas);
-    }
-
     protected void ajouter() {
         System.out.println("date début :");
         LocalDate debut= Utilitaire.lecDate();

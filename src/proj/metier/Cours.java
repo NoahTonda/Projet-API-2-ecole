@@ -28,7 +28,7 @@ public class Cours {
     /**
      * liste des spécialistes de cette matière
      */
-    private List<Maitrise> specialite=new ArrayList<>();
+    private List<Maitrise> specialiste=new ArrayList<>();
     /**
      * liste des sessions de ce cours
      */
@@ -87,7 +87,7 @@ public class Cours {
      * @return liste des spécialistes de ce cours
      */
     public List<Maitrise> getSpecialite() {
-        return specialite;
+        return specialiste;
     }
 
     /**
@@ -95,7 +95,7 @@ public class Cours {
      * @param specialite liste des spécialistes de ce cours
      */
     public void setSpecialite(List<Maitrise> specialite) {
-        this.specialite = specialite;
+        this.specialiste = specialite;
     }
 
     /**
@@ -131,7 +131,7 @@ public class Cours {
      */
     @Override
     public String toString() {
-        Utilitaire.affListe(specialite);
-        return "matiere :'" + matiere +"'"+ ", nombre d'heures de cours :" + nbreHeures;
+        return "matiere :'" + matiere +"'"+ ", nombre d'heures de cours :" + nbreHeures+"\n";
+
     }
 }

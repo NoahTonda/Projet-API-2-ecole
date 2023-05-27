@@ -180,8 +180,8 @@ public class SessionCours {
      */
     @Override
     public String toString() {
-        return "cours :" + cours + ", dateDebut :" + dateDebut + ", dateFin :" + dateFin + ", nbreInscrits :" + nbreInscrits +
+        return "cours :" + cours + "dateDebut :" + dateDebut + ", dateFin :" + dateFin + ", nbreInscrits :" + nbreInscrits +
                 "\nformateur = " + formateur +
-                "\nlocal = " + local;
+                "local = " + local;
     }
 }

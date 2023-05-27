@@ -1,13 +1,16 @@
 package mvp.model;
 
 import proj.metier.Cours;
+import proj.metier.Formateur;
 import proj.metier.SessionCours;
 
 import java.util.List;
 
 public interface CoursSpecial {
-    public List<SessionCours> sessionLoc(Cours cours);
-    public List<String> specialistes(Cours cours);
+    List<SessionCours> sessionLoc(Cours cours);
+    List<String> specialistes(Cours cours);
 
-    public List<SessionCours> sessionDate(Cours cours);
+    List<SessionCours> sessionDate(Cours cours);
+    List<Formateur> get_available_formateurs(Cours cours);
+
     }

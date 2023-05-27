@@ -155,6 +155,6 @@ public class Formateur {
      */
     @Override
     public String toString() {
-        return "id :"+ id+", nom :'" + nom +"'"+ ", prenom :'" + prenom +"'"+ ", mail :'" + mail+"'";
+        return "id :"+ id+", nom :'" + nom +"'"+ ", prenom :'" + prenom +"'"+ ", mail :'" + mail+"'\n";
     }
 }

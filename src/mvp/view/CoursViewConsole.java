@@ -2,7 +2,6 @@ package mvp.view;
 
 import mvp.presenter.SpecialCoursPresenter;
 import proj.metier.Cours;
-import proj.metier.Maitrise;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +19,7 @@ public class CoursViewConsole extends AbstractViewConsole<Cours> implements Spec
         Cours cours = ldatas.get(nl);
         cours = presenter.search(cours.getId());//pour obtenir les cours dans la liste
         do {
-            int ch = choixListe(Arrays.asList("sessions avec local", "spécialistes du cours", "fin sessions entre 2 dates avec local","fin" ));
+            int ch = choixListe(Arrays.asList("sessions avec local", "spécialistes du cours", "fin sessions entre 2 dates avec local","formateurs disponibles","fin" ));
 
             switch (ch) {
                 case 1:
@@ -33,6 +32,9 @@ public class CoursViewConsole extends AbstractViewConsole<Cours> implements Spec
                     sessionDate(cours);
                     break;
                 case 4:
+                    get_available_formateurs(cours);
+                    break;
+                case 5:
                     return;
                 default:
                     System.out.println("choix invalide recommencez ");
@@ -44,7 +46,6 @@ public class CoursViewConsole extends AbstractViewConsole<Cours> implements Spec
         ((SpecialCoursPresenter)presenter).sessionLoc(cours);
     }
 
-
     @Override
     public void specialistes(Cours cours) {
         ((SpecialCoursPresenter)presenter).specialistes(cours);
@@ -53,6 +54,11 @@ public class CoursViewConsole extends AbstractViewConsole<Cours> implements Spec
     @Override
     public void sessionDate(Cours cours) {
         ((SpecialCoursPresenter)presenter).sessionDate(cours);
+    }
+
+    @Override
+    public void get_available_formateurs(Cours cours) {
+        ((SpecialCoursPresenter)presenter).get_available_formateurs(cours);
     }
 
     @Override
@@ -71,15 +77,6 @@ public class CoursViewConsole extends AbstractViewConsole<Cours> implements Spec
         System.out.println("idcours : ");
         int idCours = sc.nextInt();
         presenter.search(idCours);
-    }
-
-    @Override
-    protected void retirer() {
-        int del = choixListe(ldatas)-1;
-        Cours cours=ldatas.get(del);
-        presenter.remove(cours);
-        ldatas=presenter.getAll();
-        affList(ldatas);;
     }
     @Override
     protected void ajouter() {

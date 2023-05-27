@@ -5,7 +5,7 @@ import proj.metier.Formateur;
 import proj.metier.Maitrise;
 
 public interface SpecialMaitrisePresenter {
-    void setCoursPresenter(CoursPresenter coursPresenter);
+    void setCoursPresenter(Presenter<Cours> coursPresenter);
     void setFormateurPresenter(Presenter<Formateur> formateurPresenter);
     Cours choixCours();
     Formateur choixFormateur();

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import proj.metier.Local;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,33 +22,26 @@ public class LocalModelDB implements DAO<Local>,LocalSpecial {
         }
         logger.info("connexion établie");
     }
+    //utilisation d'une fonction sql de mme Legrand
     @Override
     public Local add(Local local) {
         String sigle = local.getSigle();
         int places = local.getPlaces();
-        String query1 = "insert into APILOCAL(sigle,places) values(?,?)";
-        String query2="select id_Local from APILOCAL where sigle= ? and places=?";
-        try(PreparedStatement pstm1= dbConnect.prepareStatement(query1);
-            PreparedStatement pstm2= dbConnect.prepareStatement(query2);
-        ){
-            pstm1.setString(1,sigle);
-            pstm1.setInt(2,places);
-            int n = pstm1.executeUpdate();
-            if (n==1){
-                pstm2.setString(1,sigle);
-                pstm2.setInt(2,places);
-                ResultSet rs= pstm2.executeQuery();
-                if (rs.next()){
-                    int idLocal= rs.getInt(1);
-                    local.setId(idLocal);
-                    return local;
-                }
-                else System.out.println("record introuvable");
-                return null;
-            }
-            else return null;
-        }catch(SQLException e){
-            System.out.println("erreur sql : "+e);
+        int idLocal;
+        try(CallableStatement callableStatement = dbConnect.prepareCall("{ call insert_local_cours(?, ?, ?) }")){
+            // Paramètres d'entrée
+            callableStatement.setString(1, sigle);
+            callableStatement.setInt(2, places);
+            // Paramètre de sortie
+            callableStatement.registerOutParameter(3, Types.INTEGER);
+            // Exécution de la procédure
+            callableStatement.execute();
+            // Récupération de la valeur du paramètre de sortie
+            idLocal=callableStatement.getInt(3);
+            local.setId(idLocal);
+            return local;
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -121,29 +115,47 @@ public class LocalModelDB implements DAO<Local>,LocalSpecial {
     //utilisation d'une fonction sql de mme Legrand
     @Override
     public List<Local> GetAvailableLocals(int inscrits) {
-        List<Local> ll=new ArrayList<>();
+        List<Local> ll = new ArrayList<>();
         try (CallableStatement stmt = dbConnect.prepareCall("{? = call GetAvailableLocals(?)}")) {
-            try {
+            // Enregistrer le type de retour de la fonction
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.setInt(2, inscrits);
+            // Exécuter la fonction
+            stmt.execute();
+            // Récupérer le curseur de résultat
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+            while (rs.next()) {
+                int id_Local = rs.getInt(1);
+                String sigle = rs.getString(2);
+                int places = rs.getInt(3);
+                Local l = new Local(id_Local, sigle, places);
+                ll.add(l);
+            }
+        } catch (SQLException e) {
+            System.out.println("erreur sql :" + e);
+        }
+        return ll;
+    }
+    //utilisation d'une fonction sql de mme Legrand
+        @Override
+    public int is_local_available(Local local, LocalDate debut, LocalDate fin) {
+        int i;
+        try (CallableStatement stmt = dbConnect.prepareCall("{? = call is_local_available(?,?,?)}")) {
+                stmt.setInt(2,local.getId());
+                stmt.setDate(3,Date.valueOf(debut));
+                stmt.setDate(4,Date.valueOf(fin));
                 // Enregistrer le type de retour de la fonction
-                stmt.registerOutParameter(1, OracleTypes.CURSOR);
-                stmt.setInt(2,inscrits);
+                stmt.registerOutParameter(1, Types.INTEGER);
                 // Exécuter la fonction
                 stmt.execute();
                 // Récupérer le curseur de résultat
-                ResultSet rs = (ResultSet) stmt.getObject(1);
-                while (rs.next()) {
-                    int id_Local = rs.getInt(1);
-                    String sigle = rs.getString(2);
-                    int places = rs.getInt(3);
-                    Local l = new Local(id_Local,sigle,places);
-                    ll.add(l);
-                }
+                i = stmt.getInt(1);
             } catch (SQLException e) {
                 System.out.println("erreur sql :" + e);
+                i=1;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return ll;    }
+        return i;
+
+    }
 }
 

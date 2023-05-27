@@ -32,16 +32,6 @@ public class FormateurViewConsole extends AbstractViewConsole<Formateur>{
         int idFormateur = sc.nextInt();
         presenter.search(idFormateur);
     }
-
-
-    protected void retirer() {
-        int del = choixListe(ldatas)-1;
-        Formateur Formateur=ldatas.get(del);
-        presenter.remove(Formateur);
-        ldatas=presenter.getAll();
-        affList(ldatas);
-    }
-
     protected void ajouter() {
         System.out.println("mail :");
         String mail = sc.nextLine();

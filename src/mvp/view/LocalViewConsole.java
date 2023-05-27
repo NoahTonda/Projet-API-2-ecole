@@ -3,7 +3,9 @@ package mvp.view;
 import mvp.presenter.LocalPresenter;
 import mvp.presenter.SpecialLocalPresenter;
 import proj.metier.Local;
+import proj.metier.Local;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -32,16 +34,6 @@ public class LocalViewConsole extends AbstractViewConsole<Local> implements Spec
         int idLocal = sc.nextInt();
         presenter.search(idLocal);
     }
-
-
-    protected void retirer() {
-        int del = choixListe(ldatas)-1;
-        Local Local=ldatas.get(del);
-        presenter.remove(Local);
-        ldatas=presenter.getAll();
-        affList(ldatas);
-    }
-
     protected void ajouter() {
         System.out.println("sigle :");
         String sigle = sc.nextLine();
@@ -51,14 +43,18 @@ public class LocalViewConsole extends AbstractViewConsole<Local> implements Spec
         ldatas=presenter.getAll();
     }
     protected void special() {
+
         do {
-            int ch = choixListe(Arrays.asList("locaux disponibles pour n élèves", "fin" ));
+            int ch = choixListe(Arrays.asList("locaux disponibles pour n élèves","locaux disponibles entre 2 dates", "fin" ));
 
             switch (ch) {
                 case 1:
                     GetAvailableLocals();
                     break;
                 case 2:
+                    is_local_available();
+                    break;
+                case 3:
                     return;
                 default:
                     System.out.println("choix invalide recommencez ");
@@ -71,5 +67,18 @@ public class LocalViewConsole extends AbstractViewConsole<Local> implements Spec
         System.out.println("nombre d'élèves inscrits : ");
         int inscrits=sc.nextInt();
         ((SpecialLocalPresenter)presenter).GetAvailableLocals(inscrits);
+    }
+
+    @Override
+    public void is_local_available() {
+        System.out.println("numéro de ligne : ");
+        int nl = choixListe(ldatas) - 1;
+        Local local = ldatas.get(nl);
+        local = presenter.search(local.getId());//pour obtenir les locaux dans la liste
+        System.out.println("date de début : ");
+        LocalDate debut=lecDate();
+        System.out.println("date de fin : ");
+        LocalDate fin=lecDate();
+        ((SpecialLocalPresenter)presenter).is_local_available(local,debut,fin);
     }
 }

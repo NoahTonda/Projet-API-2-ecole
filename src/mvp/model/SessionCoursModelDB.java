@@ -25,6 +25,7 @@ public class SessionCoursModelDB implements DAO<SessionCours> {
         }
         logger.info("connexion établie");
     }
+    //utilisation d'une fonction sql de mme Legrand
     @Override
     public SessionCours add(SessionCours sessionCours) {
         LocalDate dateDebut = sessionCours.getDateDebut();
@@ -33,40 +34,28 @@ public class SessionCoursModelDB implements DAO<SessionCours> {
         int idCours = sessionCours.getCours().getId();
         int idLocal = sessionCours.getLocal().getId();
         int idFormateur = sessionCours.getFormateur().getId();
-        String query1 = "insert into APISESSIONCOURS(dateDebut,dateFin,nbreInscrits,id_Cours,id_Local,id_Formateur) values(?,?,?,?,?,?)";
-        String query2="select id_sessionCours from APISESSIONCOURS where dateDebut and dateFin and nbreInscrits and id_Cours and id_Local and id_Formateur";
-        try(PreparedStatement pstm1= dbConnect.prepareStatement(query1);
-            PreparedStatement pstm2= dbConnect.prepareStatement(query2)
-        ){
-            pstm1.setDate(1,Date.valueOf(dateDebut));
-            pstm1.setDate(2,Date.valueOf(dateFin));
-            pstm1.setInt(3,nbreInscrits);
-            pstm1.setInt(4,idCours);
-            pstm1.setInt(5,idLocal);
-            pstm1.setInt(6,idFormateur);
-            int n = pstm1.executeUpdate();
-            if (n==1){
-                pstm1.setDate(1,Date.valueOf(dateDebut));
-                pstm1.setDate(2,Date.valueOf(dateFin));
-                pstm1.setInt(3,nbreInscrits);
-                pstm1.setInt(4,idCours);
-                pstm1.setInt(5,idLocal);
-                pstm1.setInt(6,idFormateur);
-                ResultSet rs= pstm2.executeQuery();
-                if (rs.next()){
-                    int idSessionCours= rs.getInt(1);
-                    sessionCours.setId(idSessionCours);
-                    return sessionCours;
-                }
-                else System.out.println("record introuvable");
-                return null;
-            }
-            else return null;
-        }catch(SQLException e){
+        try (CallableStatement stmt = dbConnect.prepareCall("{CALL insert_session_cours(?, ?, ?, ?, ?, ?, ?)}")){
+            // Définir les paramètres d'entrée
+            stmt.setDate(1, Date.valueOf(dateDebut));
+            stmt.setDate(2, Date.valueOf(dateFin));
+            stmt.setInt(3, nbreInscrits);
+            stmt.setInt(4, idCours);
+            stmt.setInt(5, idLocal);
+            stmt.setInt(6, idFormateur);
+            // Définir le paramètre de sortie
+            stmt.registerOutParameter(7, Types.INTEGER);
+            // Exécuter la procédure
+            stmt.execute();
+            // Récupérer la valeur du paramètre de sortie
+            int sessionId = stmt.getInt(7);
+            sessionCours.setId(sessionId);
+            return sessionCours;
+        } catch (SQLException e) {
             System.out.println("erreur sql : "+e);
             return null;
         }
     }
+
     @Override
     public SessionCours read(int idSessionCours){
         boolean flag=false;

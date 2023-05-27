@@ -63,9 +63,8 @@ public class MaitriseModelDB implements DAO<Maitrise> {
 
     @Override
     public Maitrise update(Maitrise maitrise) {
-        String query = "update APIMAITRISE set description where id_formateur=? and id_cours=?";
+        String query = "update APIMAITRISE set description=? where id_formateur=? and id_cours=?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)){
-            System.out.println(maitrise);
             pstm.setString(1, maitrise.getDescription());
             pstm.setInt(2,maitrise.getSpecialiste().getId());
             pstm.setInt(3,maitrise.getSpecialite().getId());

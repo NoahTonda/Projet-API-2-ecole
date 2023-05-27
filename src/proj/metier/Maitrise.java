@@ -85,6 +85,6 @@ public class Maitrise {
      */
     @Override
     public String toString() {
-        return "specialiste=" + specialiste + "\ndescription='" + description + "'\n";
+        return "specialiste=" + specialiste + "\nCours='" + specialite+ "\ndescription='" + description +"\n";
     }
 }
