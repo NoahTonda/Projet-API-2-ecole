@@ -22,7 +22,6 @@ public class MaitrisePresenter extends Presenter<Maitrise> implements SpecialMai
     public void add(Maitrise elt) {
         Maitrise nelt = model.add(elt);
         if(nelt!=null) {
-            coursPresenter.ajouterSpecialiste(elt, elt.getSpecialite());
             view.affMsg("création de :" + nelt);
         }
         else view.affMsg("erreur de création");
