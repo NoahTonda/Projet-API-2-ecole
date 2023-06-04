@@ -1,14 +1,10 @@
 package mvp.view;
 
-import mvp.presenter.LocalPresenter;
 import mvp.presenter.SpecialLocalPresenter;
-import proj.metier.Local;
 import proj.metier.Local;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
 
 import static utilitaires.Utilitaire.*;
 import static utilitaires.Utilitaire.choixListe;

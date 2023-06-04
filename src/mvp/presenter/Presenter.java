@@ -3,7 +3,6 @@ package mvp.presenter;
 import mvp.model.DAO;
 import mvp.view.ViewInterface;
 
-import java.util.Comparator;
 import java.util.List;
 
 public abstract class Presenter<T> {

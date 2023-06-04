@@ -22,7 +22,7 @@ public class LocalModelDB implements DAO<Local>,LocalSpecial {
         }
         logger.info("connexion établie");
     }
-    //utilisation d'une fonction sql de mme Legrand
+    //TODO utilisation d'une procédure sql de mme Legrand
     @Override
     public Local add(Local local) {
         String sigle = local.getSigle();
@@ -112,7 +112,7 @@ public class LocalModelDB implements DAO<Local>,LocalSpecial {
         }
     }
 
-    //utilisation d'une fonction sql de mme Legrand
+    //TODO utilisation d'une fonction sql de mme Legrand
     @Override
     public List<Local> GetAvailableLocals(int inscrits) {
         List<Local> ll = new ArrayList<>();
@@ -136,7 +136,7 @@ public class LocalModelDB implements DAO<Local>,LocalSpecial {
         }
         return ll;
     }
-    //utilisation d'une fonction sql de mme Legrand
+    //TODO utilisation d'une fonction sql de mme Legrand
         @Override
     public int is_local_available(Local local, LocalDate debut, LocalDate fin) {
         int i;
@@ -144,11 +144,8 @@ public class LocalModelDB implements DAO<Local>,LocalSpecial {
                 stmt.setInt(2,local.getId());
                 stmt.setDate(3,Date.valueOf(debut));
                 stmt.setDate(4,Date.valueOf(fin));
-                // Enregistrer le type de retour de la fonction
                 stmt.registerOutParameter(1, Types.INTEGER);
-                // Exécuter la fonction
                 stmt.execute();
-                // Récupérer le curseur de résultat
                 i = stmt.getInt(1);
             } catch (SQLException e) {
                 System.out.println("erreur sql :" + e);

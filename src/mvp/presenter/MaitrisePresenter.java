@@ -6,7 +6,6 @@ import proj.metier.Cours;
 import proj.metier.Formateur;
 import proj.metier.Maitrise;
 
-import java.util.List;
 
 public class MaitrisePresenter extends Presenter<Maitrise> implements SpecialMaitrisePresenter{
     private Presenter<Cours> coursPresenter;

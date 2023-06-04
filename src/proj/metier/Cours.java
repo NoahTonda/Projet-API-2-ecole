@@ -1,7 +1,5 @@
 package proj.metier;
 
-import utilitaires.Utilitaire;
-
 import java.util.ArrayList;
 import java.util.List;
 

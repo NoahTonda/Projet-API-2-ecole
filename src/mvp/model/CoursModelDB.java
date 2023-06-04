@@ -103,7 +103,7 @@ public class CoursModelDB implements DAO<Cours>,CoursSpecial {
             return false;
         }
     }
-    //utilisation d'une fonction sql de mme Legrand
+    //TODO utilisation d'une fonction sql de mme Legrand
     @Override
     public List<Cours> getAll() {
         List<Cours> lc=new ArrayList<>();
@@ -144,7 +144,7 @@ public class CoursModelDB implements DAO<Cours>,CoursSpecial {
         String query="select * from APISESSIONCOURS where id_cours=? and datefin>? and datefin<?";
         return rechercheSessionDate(cours,query);
     }
-    //utilisation d'une fonction sql de mme Legrand
+    //TODO utilisation d'une fonction sql de mme Legrand
     @Override
     public List<Formateur> get_available_formateurs(Cours cours) {
         List<Formateur> lf=new ArrayList<>();

@@ -1,5 +1,4 @@
 package mvp.model;
-import mvp.presenter.SessionCoursPresenter;
 import myconnections.DBConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +24,7 @@ public class SessionCoursModelDB implements DAO<SessionCours> {
         }
         logger.info("connexion établie");
     }
-    //utilisation d'une fonction sql de mme Legrand
+    //TODO utilisation d'une procédure sql de mme Legrand
     @Override
     public SessionCours add(SessionCours sessionCours) {
         LocalDate dateDebut = sessionCours.getDateDebut();

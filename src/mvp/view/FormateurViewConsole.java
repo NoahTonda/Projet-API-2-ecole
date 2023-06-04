@@ -1,12 +1,7 @@
 package mvp.view;
 
-import mvp.presenter.FormateurPresenter;
 import proj.metier.Formateur;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-
 import static utilitaires.Utilitaire.*;
 import static utilitaires.Utilitaire.choixListe;
 

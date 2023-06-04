@@ -1,12 +1,7 @@
 package mvp.view;
 
-import mvp.presenter.CoursPresenter;
 import mvp.presenter.MaitrisePresenter;
 import proj.metier.*;
-import utilitaires.Utilitaire;
-
-import java.time.LocalDate;
-import java.util.List;
 
 import static utilitaires.Utilitaire.*;
 

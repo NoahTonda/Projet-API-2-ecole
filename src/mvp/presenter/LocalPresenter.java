@@ -1,11 +1,9 @@
 package mvp.presenter;
 
-import mvp.model.CoursSpecial;
 import mvp.model.DAO;
 import mvp.model.LocalSpecial;
 import mvp.view.ViewInterface;
 import proj.metier.Local;
-import proj.metier.SessionCours;
 
 import java.time.LocalDate;
 import java.util.List;
